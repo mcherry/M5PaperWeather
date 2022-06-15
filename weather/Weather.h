@@ -68,12 +68,25 @@ protected:
       WiFiClient client;
       HTTPClient http;
       String     uri;
+
+      String lat = (String)LATITUDE;
+      String lng = (String)LONGITUDE;
+      String units = UNITS;
+      String apiKey = OPENWEATHER_API;
+
+      if (lat == 0) lat = myConfig.lat;
+      if (lng == 0) lng = myConfig.lng;
+      if (units == "") units = myConfig.units;
+      if (apiKey == "") apiKey = myConfig.apiKey;
       
       uri += "/data/2.5/onecall";
-      uri += "?lat=" + String((float) LATITUDE, 5);
-      uri += "&lon=" + String((float) LONGITUDE, 5);
-      uri += "&units=metric&lang=en&exclude=minutely";
-      uri += "&appid=" + (String) OPENWEATHER_API;
+      uri += "?lat=" + lat;
+      uri += "&lon=" + lng;
+      uri += "&units=" + units;
+      uri += "&lang=en&exclude=minutely";
+      uri += "&appid=" + apiKey;
+
+      Serial.println(uri);
 
       client.stop();
       http.begin(client, OPENWEATHER_SRV, OPENWEATHER_PORT, uri);

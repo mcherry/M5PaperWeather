@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2021 SFini
+   Copyright (C) 2022 Mike Cherry <mcherry@inditech.org>
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -15,24 +15,26 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /**
-  * @file Config.h
+  * @file EPDSD.h
   * 
-  * Configuration information. Blank or 0 values will cause config
-  * to be loaded from config.json on SD card
+  * Helper functions for SD access
   */
 #pragma once
 
-#define VERSION          "Version 1.1"
-#define CITY_NAME        ""
+#include <ArduinoJson.h>
+#include <SD.h>
+#include <SPI.h>
 
-// change to your location
-#define LATITUDE         0
-#define LONGITUDE        0
-#define UNITS            ""
+bool StartSD() {
+  bool retVal = false;
+  
+  Serial.print("Initializing SD card ... ");
+  if (!SD.begin(4)) {
+    Serial.println("*** FAILED ***");
+  } else {
+    Serial.println("complete");
+    retVal = true;
+  }
 
-#define OPENWEATHER_SRV  "api.openweathermap.org"
-#define OPENWEATHER_PORT 80
-#define OPENWEATHER_API  ""
-
-#define WIFI_SSID        ""
-#define WIFI_PW          ""
+  return retVal;
+}

@@ -8,7 +8,8 @@
 ### Description
   Arduino project to show internal environment data and weather information from 
   openweathermap https://openweathermap.org on the e-ink display of the M5Paper.
-  Please edit the config.h file with your own data.
+  Please edit the config.h file with your own data or modify config.json and place on a SD card 
+in the device..
   You need an api key from openweathermap.
   The software shows the following information:
   * A header with version, city wifi strength and battery status

@@ -22,11 +22,12 @@
   
 #include <M5EPD.h>
 #include "Config.h"
-#include "ConfigOverride.h" // Remove this line
+#include "ConfigFile.h"
 #include "Data.h"
 #include "Display.h"
 #include "Battery.h"
 #include "EPD.h"
+#include "EPDSD.h"
 #include "EPDWifi.h"
 #include "Moon.h"
 #include "SHT30.h"
@@ -45,6 +46,11 @@ void setup()
 {
 #ifndef REFRESH_PARTLY
    InitEPD(true);
+
+   if (StartSD()) {
+       myConfig = getConfig("/config.json");
+   }
+   
    if (StartWiFi(myData.wifiRSSI)) {
       GetBatteryValues(myData);
       GetSHT30Values(myData);

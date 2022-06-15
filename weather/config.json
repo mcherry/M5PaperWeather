@@ -1,0 +1,9 @@
+{
+    "ssid": "WiFiNetworkName",
+    "key": "WifiKey",
+    "city": "City, ST",
+    "lat": "0.000",
+    "lng": "-0.000",
+    "units": "imperial",
+    "apiKey": "00000000000000000000000000000000"
+}

@@ -20,7 +20,9 @@
   * Helper functions for the wifi connection.
   */
 #pragma once
+#include <ArduinoJson.h>
 #include <WiFi.h>
+#include "ConfigFile.h"
 
 /* Start and connect to the wifi */
 bool StartWiFi(int &rssi) 
@@ -32,11 +34,21 @@ bool StartWiFi(int &rssi)
    WiFi.setAutoConnect(true);
    WiFi.setAutoReconnect(true);
 
+   String WifiSSID = WIFI_SSID;
+   String WifiPW = WIFI_PW;
+   
+   if (WifiSSID == "") {
+       Serial.println("SSID not defined, using config from SD");
+       
+       WifiSSID = String(myConfig.wifiSSID);
+       WifiPW = String(myConfig.wifiKey);
+   }
+
    Serial.print("Connecting to ");
-   Serial.println(WIFI_SSID);
+   Serial.println(WifiSSID);
    delay(100);
    
-   WiFi.begin(WIFI_SSID, WIFI_PW);
+   WiFi.begin(WifiSSID.c_str(), WifiPW.c_str());
 
    for (int retry = 0; WiFi.status() != WL_CONNECTED && retry < 30; retry++) {
       delay(500);
@@ -46,7 +58,8 @@ bool StartWiFi(int &rssi)
    rssi = 0;
    if (WiFi.status() == WL_CONNECTED) {
       rssi = WiFi.RSSI();
-      Serial.println("WiFi connected at: " + WiFi.localIP().toString());
+      Serial.print("WiFi connected: ");
+      Serial.println(WiFi.localIP().toString());
       return true;
    } else {
       Serial.println("WiFi connection *** FAILED ***");
@@ -57,7 +70,7 @@ bool StartWiFi(int &rssi)
 /* Stop the wifi connection */
 void StopWiFi() 
 {
-   Serial.println("Stop WiFi");
+   Serial.println("WiFi disconnected");
    WiFi.disconnect();
    WiFi.mode(WIFI_OFF);
 }

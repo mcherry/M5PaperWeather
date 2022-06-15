@@ -108,8 +108,11 @@ void WeatherDisplay::DrawBattery(int x, int y)
 /* Draw a the head with version, city, rssi and battery */
 void WeatherDisplay::DrawHead()
 {
+   String cityName = CITY_NAME;
+   if (cityName == "") cityName = myConfig.city;
+   
    canvas.drawString(VERSION, 20, 10);
-   canvas.drawCentreString(CITY_NAME, maxX / 2, 10, 1);
+   canvas.drawCentreString(cityName, maxX / 2, 10, 1);
    canvas.drawString(WifiGetRssiAsQuality(myData.wifiRSSI) + "%", maxX - 200, 10);
    DrawRSSI(maxX - 155, 25);
    canvas.drawString(String(myData.batteryCapacity) + "%", maxX - 110, 10);
