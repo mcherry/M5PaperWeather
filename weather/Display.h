@@ -271,7 +271,14 @@ void WeatherDisplay::DisplayDisplayWindSection(int x, int y, float angle, float 
    canvas.drawCentreString("W", x - cradius - 15, y - 3, 1);
    canvas.drawCentreString("E", x + cradius + 15,  y - 3, 1);
    canvas.drawCentreString(String(windspeed, 1), x, y - 20, 1);
-   canvas.drawCentreString("m/s", x, y, 1);
+
+   String weatherUnits = UNITS;
+   if (weatherUnits == "") weatherUnits = myConfig.units;
+
+   String windMeasureStr = "m/s";
+   if (weatherUnits == "imperial") windMeasureStr = "mph";
+   
+   canvas.drawCentreString(windMeasureStr, x, y, 1);
 
    Arrow(x, y, cradius - 17, angle, 15, 27);
 }
@@ -299,9 +306,15 @@ void WeatherDisplay::DrawM5PaperInfo(int x, int y, int dx, int dy)
    canvas.setTextSize(2);
    canvas.drawCentreString("updated", x + dx / 2, y + 120, 1);
 
+   String weatherUnits = UNITS;
+   if (weatherUnits == "") weatherUnits = myConfig.units;
+
+   String tempDisplay = "C";
+   if (weatherUnits == "imperial") tempDisplay = " F";
+
    canvas.setTextSize(3);
    DrawIcon(x + 35, y + 140, (uint16_t *) TEMPERATURE64x64);
-   canvas.drawString(String(myData.sht30Temperatur) + " C", x + 35, y + 210, 1);
+   canvas.drawString(String(myData.sht30Temperatur) + tempDisplay, x + 35, y + 210, 1);
    DrawIcon(x + 145, y + 140, (uint16_t *) HUMIDITY64x64);
    canvas.drawString(String(myData.sht30Humidity) + "%", x + 150, y + 210, 1);
    
@@ -314,10 +327,16 @@ void WeatherDisplay::DrawHourly(int x, int y, int dx, int dy, Weather &weather, 
    int    temp = weather.hourlyMaxTemp[index];
    String main = weather.hourlyMain[index];
    String icon = weather.hourlyIcon[index];
+
+   String weatherUnits = UNITS;
+   if (weatherUnits == "") weatherUnits = myConfig.units;
+
+   String tempDisplay = "C";
+   if (weatherUnits == "imperial") tempDisplay = " F";
    
    canvas.setTextSize(2);
    canvas.drawCentreString(getHourString(time) + ":00", x + dx / 2, y + 10, 1);
-   canvas.drawCentreString(String(temp) + " C",         x + dx / 2, y + 30, 1);
+   canvas.drawCentreString(String(temp) + tempDisplay,         x + dx / 2, y + 30, 1);
    // canvas.drawCentreString(main,                        x + dx / 2, y + 70, 1);
 
    int iconX = x + dx / 2 - 32;
@@ -434,10 +453,23 @@ void WeatherDisplay::Show()
       DrawHourly(x, 286, 116, 122, myData.weather, i);
    }
 
+   String weatherUnits = UNITS;
+   if (weatherUnits == "") weatherUnits = myConfig.units;
+
+   String tempDisplay = "C";
+   String rainDisplay = "mm";
+   int tempMin = -20;
+   int tempMax = 30;
+   if (weatherUnits == "imperial") {
+       rainDisplay = "in";
+       tempDisplay = "F";
+       tempMax = 120;
+   }
+
    canvas.drawRect(15, 408, maxX - 30, 122, M5EPD_Canvas::G15);
-   DrawGraph( 15, 408, 232, 122, "Temperature (C)", 0, 7, -20,   30, myData.weather.forecastMaxTemp);
-   DrawGraph( 15, 408, 232, 122, "Temperature (C)", 0, 7, -20,   30, myData.weather.forecastMinTemp);
-   DrawGraph(247, 408, 232, 122, "Rain (mm)",       0, 7,   0,   myData.weather.maxRain, myData.weather.forecastRain);
+   DrawGraph( 15, 408, 232, 122, "Temperature (" + tempDisplay + ")", 0, 7, tempMin,   tempMax, myData.weather.forecastMaxTemp);
+   DrawGraph( 15, 408, 232, 122, "Temperature (" + tempDisplay + ")", 0, 7, tempMin,   tempMax, myData.weather.forecastMinTemp);
+   DrawGraph(247, 408, 232, 122, "Rain (" + rainDisplay + ")",       0, 7,   0,   myData.weather.maxRain, myData.weather.forecastRain);
    DrawGraph(479, 408, 232, 122, "Humidity (%)",    0, 7,   0,  100, myData.weather.forecastHumidity);
    DrawGraph(711, 408, 232, 122, "Pressure (hPa)",  0, 7, 800, 1400, myData.weather.forecastPressure);
    
