@@ -113,9 +113,9 @@ void WeatherDisplay::DrawHead()
    
    canvas.drawString(VERSION, 20, 10);
    canvas.drawCentreString(cityName, maxX / 2, 10, 1);
-   canvas.drawString(WifiGetRssiAsQuality(myData.wifiRSSI) + "%", maxX - 200, 10);
+   canvas.drawString(WifiGetRssiAsQuality(myData.wifiRSSI) + "%", maxX - 210, 10);
    DrawRSSI(maxX - 155, 25);
-   canvas.drawString(String(myData.batteryCapacity) + "%", maxX - 110, 10);
+   canvas.drawString(String(myData.batteryCapacity) + "%", maxX - 120, 10);
    DrawBattery(maxX - 65, 10);
 }
 
